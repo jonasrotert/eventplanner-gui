@@ -7,7 +7,6 @@ import '@vaadin/text-field';
 import {Binder, field} from "@hilla/form";
 import ContactDTOModel from "Frontend/generated/de/jonasrotert/eventplanner/gui/service/dto/ContactDTOModel";
 import {contactListStore} from "Frontend/views/contact/contact-list-store";
-import {contactStore} from "Frontend/stores/app-store";
 
 @customElement('contact-form')
 export class ContactForm extends View {

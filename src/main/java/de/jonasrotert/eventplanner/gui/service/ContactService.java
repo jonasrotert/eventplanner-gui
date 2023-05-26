@@ -23,7 +23,7 @@ public class ContactService {
 	public ContactDTO save(final ContactDTO contactDTO) {
 		if (contactDTO.getId() != null) {
 			final var optionalContact = this.contactRepository.findById(contactDTO.getId());
-			return this.mapper.toDTO(optionalContact.isPresent()? this.updateContact(optionalContact.get(), contactDTO) : this.createContact(contactDTO));
+			return this.mapper.toDTO(optionalContact.map(contact -> this.updateContact(contact, contactDTO)).orElseGet(() -> this.createContact(contactDTO)));
 		}
 
 		return this.mapper.toDTO(this.createContact(contactDTO));

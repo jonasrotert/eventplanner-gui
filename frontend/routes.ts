@@ -1,5 +1,6 @@
 import type {Route} from '@vaadin/router';
 import './views/contact/contact-list';
+import './views/event/event-list';
 import './main-layout';
 
 export type ViewRoute = Route & {
@@ -19,10 +20,16 @@ export const views: ViewRoute[] = [
         },
     },
     {
-        path: '',
+        path: 'contacts',
         component: 'contact-list',
         icon: 'file',
         title: 'Contacts',
+    },
+    {
+        path: 'events',
+        component: 'event-list',
+        icon: 'file',
+        title: 'Events',
     },
 
 ];

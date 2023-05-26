@@ -31,7 +31,7 @@ export class ContactList extends View {
         return html`
             <div class="toolbar flex gap-s">
                 <vaadin-text-field placeholder="Filter by name" .value=${contactListStore.filterText} @input=${this.updateFilter} clear-button-visible></vaadin-text-field>
-                <vaadin-button>Add Contact</vaadin-button>
+                <vaadin-button @click="${contactListStore.editNew}">Add Contact</vaadin-button>
             </div>
             <div class="content flex gap-m h-full">
                 <vaadin-grid class="grid h-full" .items=${contactListStore.filteredContacts} .selectedItems=${[contactListStore.selectedContact]} @active-item-changed=${this.handleGridSelection}>
