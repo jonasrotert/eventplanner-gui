@@ -44,7 +44,6 @@ export class EventForm extends View {
                 <vaadin-button theme="primary" @click=${this.save}> ${this.binder.value.id ? 'Update' : 'Create'}</vaadin-button>
                 <vaadin-button theme="error" @click=${eventListStore.delete}> Delete</vaadin-button>
                 <vaadin-button theme="tertiary" @click=${eventListStore.cancelEdit}>Cancel</vaadin-button>
-                
             </div>
         `;
     }

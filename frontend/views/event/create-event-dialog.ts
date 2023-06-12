@@ -1,4 +1,4 @@
-import { LitElement, html, customElement, css } from "lit-element";
+import {customElement, html, LitElement} from "lit-element";
 import {ifDefined} from "lit/directives/if-defined.js";
 
 import '@vaadin/checkbox';
@@ -13,8 +13,11 @@ import '@vaadin/icon';
 import '@vaadin/vaadin-lumo-styles/vaadin-iconset';
 import '@vaadin/text-field';
 import '@vaadin/vertical-layout';
+import '@vaadin/tabs';
+import '@vaadin/tabsheet';
 import {property, state} from "lit/decorators.js";
 import {TemplateResult} from "lit";
+import './event-form';
 
 export interface MyEvent {
     label: string;
@@ -29,62 +32,70 @@ export class CreateEventDialog extends LitElement {
 
 
     public open() {
-        console.log("Open");
         this.dialogOpened = true;
     }
 
     private close() {
-        console.log("Close button clicked");
         this.dialogOpened = false;
         this.fireEvent();
     }
 
     private fireEvent() {
-        console.log("Firing event");
         const event = new CustomEvent<MyEvent>("myClick", {
             detail: {
                 label: "click",
                 date: new Date().toISOString()
             }
         });
+
         this.dispatchEvent(event);
     }
 
     @property()
     dialogOpened = false;
 
+    private openChanged(event: DialogOpenedChangedEvent) {
+        this.dialogOpened = event.detail.value;
+        if (!this.dialogOpened) {
+            this.fireEvent();
+        }
+    }
+
     render(): TemplateResult {
         return html`
-            <vaadin-dialog header-title="User details" .opened="${this.dialogOpened}"
-                           @opened-changed="${(event: DialogOpenedChangedEvent) => {
-                               console.log("Value change from " + this.dialogOpened + " to " + event.detail.value);
-                               this.dialogOpened = event.detail.value;
-                               if (!this.dialogOpened) {
-                                   this.fireEvent();
-                               }
-                           }}"
-                           ${dialogHeaderRenderer(
-                                   () => html`
-                                       <vaadin-button theme="tertiary" @click="${this.close}">
-                                           <vaadin-icon icon="lumo:cross"></vaadin-icon>
-                                       </vaadin-button>
-                                   `,
-                                   []
-                           )}
+            <vaadin-dialog header-title="Create Event" .opened="${this.dialogOpened}" @opened-changed="${this.openChanged}"
+                           ${dialogHeaderRenderer(this.renderHeadder, [])}
                            ${dialogRenderer(this.renderDialog, this.contact)}
             ></vaadin-dialog>
         `;
     }
 
+    private renderHeadder = () => html`
+        <vaadin-button theme="tertiary" @click="${this.close}">
+            <vaadin-icon icon="lumo:cross"></vaadin-icon>
+        </vaadin-button>
+    `;
 
     private renderDialog = () => html`
-        <vaadin-vertical-layout theme="spacing" style="width: 300px; max-width: 100%; align-items: stretch;">
-            <vaadin-vertical-layout style="align-items: stretch;">
-                <vaadin-text-field label="Name" value="${`${this.contact?.firstName} ${this.contact?.lastName}`}"
-                                   readonly style="padding-top: 0;"></vaadin-text-field>
-                <vaadin-email-field label="Email" value="${ifDefined(this.contact?.email)}"
-                                    readonly></vaadin-email-field>
-            </vaadin-vertical-layout>
+        <vaadin-vertical-layout theme="spacing" style="width: 700px; max-width: 100%; align-items: stretch;" class="height-4xl">
+
+            <vaadin-tabsheet>
+                <vaadin-tabs slot="tabs">
+                    <vaadin-tab id="dashboard-tab">Basic information</vaadin-tab>
+                    <vaadin-tab id="payment-tab">Payment</vaadin-tab>
+                    <vaadin-tab id="shipping-tab">Shipping</vaadin-tab>
+                </vaadin-tabs>
+                <div tab="dashboard-tab">
+                    <event-form></event-form>
+                </div>
+                <div tab="payment-tab">
+                    <vaadin-text-field label="Name" value="${`${this.contact?.firstName} ${this.contact?.lastName}`}" readonly style="padding-top: 0;"></vaadin-text-field>
+                    <vaadin-email-field label="Email" value="${ifDefined(this.contact?.email)}" readonly></vaadin-email-field>
+                </div>
+                <div tab="shipping-tab">This is the Shipping tab content</div>
+            </vaadin-tabsheet>
+
+
         </vaadin-vertical-layout>
     `;
 }
