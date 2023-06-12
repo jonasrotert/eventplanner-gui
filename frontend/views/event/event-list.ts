@@ -6,13 +6,14 @@ import '@vaadin/button';
 import '@vaadin/grid';
 import '@vaadin/grid/vaadin-grid-column';
 import './event-form';
+import './my-container';
 import './create-event-dialog';
 import {uiStore} from "Frontend/stores/app-store";
 import '@vaadin/notification';
 import {eventListStore} from "Frontend/views/event/event-list-store";
 import {columnBodyRenderer, GridColumnBodyLitRenderer} from "@vaadin/grid/lit";
 import EventDTO from "Frontend/generated/de/jonasrotert/eventplanner/gui/service/dto/booking/EventDTO";
-import {DialogOpenedChangedEvent} from "@vaadin/dialog";
+import {MyEvent} from "Frontend/views/event/create-event-dialog";
 
 
 @customElement('event-list')
@@ -41,30 +42,39 @@ export class EventList extends View {
         eventListStore.editNew();
     }
 
-    private closeDialog(e: Event) {
+    private closeDialog(e: any) {
         console.log("fired");
+        console.log(e);
         this.openDialog = false;
     }
 
     render() {
         return html`
 
-            <create-event-dialog @dialogOpened-changed="${this.closeDialog}" .dialogOpened="${this.openDialog}"></create-event-dialog>
+            <my-container></my-container>
+            <create-event-dialog @myEvent="${this.closeDialog}"
+                                 .dialogOpened="${this.openDialog}"></create-event-dialog>
             <div class="toolbar flex gap-s">
 
-                <vaadin-text-field placeholder="Filter by name" .value=${eventListStore.filterText} @input=${this.updateFilter} clear-button-visible></vaadin-text-field>
+                <vaadin-text-field placeholder="Filter by name" .value=${eventListStore.filterText}
+                                   @input=${this.updateFilter} clear-button-visible></vaadin-text-field>
                 <vaadin-button @click="${this.editNew}">Add Event</vaadin-button>
             </div>
             <div class="content flex gap-m h-full">
-                <vaadin-grid class="grid h-full" .items=${eventListStore.filteredEvents} .selectedItems=${[eventListStore.selectedEvent]} @active-item-changed=${this.handleGridSelection}>
+                <vaadin-grid class="grid h-full" .items=${eventListStore.filteredEvents}
+                             .selectedItems=${[eventListStore.selectedEvent]}
+                             @active-item-changed=${this.handleGridSelection}>
                     <vaadin-grid-column path="title" auto-width></vaadin-grid-column>
                     <vaadin-grid-column path="description" auto-width></vaadin-grid-column>
                     <vaadin-grid-column path="bookingsCount" auto-width></vaadin-grid-column>
-                    <vaadin-grid-column header="Status" auto-width ${columnBodyRenderer(this.statusRenderer, [])}></vaadin-grid-column>
+                    <vaadin-grid-column header="Status" auto-width
+                                        ${columnBodyRenderer(this.statusRenderer, [])}></vaadin-grid-column>
                 </vaadin-grid>
                 <event-form class="flex flex-col gap-s" ?hidden=${!eventListStore.selectedEvent}></event-form>
             </div>
-            <vaadin-notification theme=${uiStore.message.error ? 'error' : 'contrast'} position="bottom-start" opened=${uiStore.message.open} .renderer=${(root: HTMLElement) => (root.textContent = uiStore.message.text)}></vaadin-notification>
+            <vaadin-notification theme=${uiStore.message.error ? 'error' : 'contrast'} position="bottom-start"
+                                 opened=${uiStore.message.open}
+                                 .renderer=${(root: HTMLElement) => (root.textContent = uiStore.message.text)}></vaadin-notification>
         `;
     }
 
