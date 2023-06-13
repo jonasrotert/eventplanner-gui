@@ -1,5 +1,5 @@
 import {customElement, html, LitElement} from "lit-element";
-import {ifDefined} from "lit/directives/if-defined.js";
+
 
 import '@vaadin/checkbox';
 import '@vaadin/combo-box';
@@ -63,7 +63,7 @@ export class CreateEventDialog extends LitElement {
 
     render(): TemplateResult {
         return html`
-            <vaadin-dialog header-title="Create Event" .opened="${this.dialogOpened}" @opened-changed="${this.openChanged}"
+            <vaadin-dialog   theme="no-padding" header-title="Create Event" .opened="${this.dialogOpened}" @opened-changed="${this.openChanged}"
                            ${dialogHeaderRenderer(this.renderHeadder, [])}
                            ${dialogRenderer(this.renderDialog, this.contact)}
             ></vaadin-dialog>
@@ -78,24 +78,7 @@ export class CreateEventDialog extends LitElement {
 
     private renderDialog = () => html`
         <vaadin-vertical-layout theme="spacing" style="width: 700px; max-width: 100%; align-items: stretch;" class="height-4xl">
-
-            <vaadin-tabsheet>
-                <vaadin-tabs slot="tabs">
-                    <vaadin-tab id="dashboard-tab">Basic information</vaadin-tab>
-                    <vaadin-tab id="payment-tab">Payment</vaadin-tab>
-                    <vaadin-tab id="shipping-tab">Shipping</vaadin-tab>
-                </vaadin-tabs>
-                <div tab="dashboard-tab">
-                    <event-form></event-form>
-                </div>
-                <div tab="payment-tab">
-                    <vaadin-text-field label="Name" value="${`${this.contact?.firstName} ${this.contact?.lastName}`}" readonly style="padding-top: 0;"></vaadin-text-field>
-                    <vaadin-email-field label="Email" value="${ifDefined(this.contact?.email)}" readonly></vaadin-email-field>
-                </div>
-                <div tab="shipping-tab">This is the Shipping tab content</div>
-            </vaadin-tabsheet>
-
-
+            <event-form></event-form>
         </vaadin-vertical-layout>
     `;
 }
